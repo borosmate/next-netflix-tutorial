@@ -7,12 +7,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id Int @id @default(autoincrement())
   name String
   image String?
   email String? @unique
@@ -22,21 +22,21 @@ model User {
   updatedAt DateTime @updatedAt
   sessions Session[]
   accounts Account[]
-  favoriteIds String[] @db.ObjectId
+  favoriteIds String
 }
 
 model Account {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  userId             String   @db.ObjectId
+  id String @id @default(uuid())
+  userId             Int
   type               String
   provider           String
   providerAccountId  String
-  refresh_token      String?  @db.String
-  access_token       String?  @db.String
+  refresh_token      String?  
+  access_token       String?  
   expires_at         Int?
   token_type         String?
   scope              String?
-  id_token           String?  @db.String
+  id_token           String?  
   session_state      String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -45,15 +45,15 @@ model Account {
 }
 
 model Session {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid()) @map("_id")
   sessionToken String @unique
-  userId String @db.ObjectId
+  userId Int 
   expires DateTime
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model VerificationToken {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid()) @map("_id")
   identifier String
   token      String   @unique
   expires    DateTime
@@ -62,7 +62,7 @@ model VerificationToken {
 }
 
 model Movie {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
+  id String @id @default(uuid()) @map("_id")
   title String
   description String
   videoUrl String
